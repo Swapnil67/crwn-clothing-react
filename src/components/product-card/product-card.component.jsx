@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
   const { addItemToCart } = useContext(CartContext);
 
   const addProductToCart = (product) => {
-    addItemToCart(product)
+    addItemToCart(product);
   }
 
   return (
