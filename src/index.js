@@ -9,6 +9,7 @@ import { CartProvider } from "./contexts/cart.context";
 
 
 import "./index.scss";
+import { CheckoutProvider } from "./contexts/checkout.context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,7 +18,9 @@ root.render(
       <UserProvider>
         <ProductsProvider>
           <CartProvider>
-            <App />
+            <CheckoutProvider>
+              <App />
+            </CheckoutProvider>
           </CartProvider>
         </ProductsProvider>
       </UserProvider>
