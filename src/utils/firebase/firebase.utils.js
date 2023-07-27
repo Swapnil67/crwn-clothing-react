@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, setDoc, getFirestore, collection, writeBatch, query, getDocs } from "firebase/firestore";
 import {
   getAuth,
   signInWithRedirect,
@@ -43,6 +43,38 @@ export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, provider);
 
 export const db = getFirestore();
+
+export const createCollectionAndDocuments = async (collectionkey, objectsToAdd) => {
+  const collectionRef = collection(db, collectionkey);
+
+  const batch = writeBatch(db);
+
+  objectsToAdd.forEach(obj => {
+    const title = obj.title.toLowerCase();
+    const docRef = doc(collectionRef, title);
+    batch.set(docRef, obj);
+  })
+
+  await batch.commit();
+  console.log("Done");
+}
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'categories');
+  const q = query(collectionRef);
+
+  const querySnapshot = await getDocs(q);
+  // console.log("querySnapshot: ", querySnapshot);
+
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    // console.log("title: ", title, " | ", "items: ", items);
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+
+  return categoryMap;
+}
 
 export const createUserDocumentFromAuth = async (
   userAuth,
